@@ -1,0 +1,634 @@
+-- Table: public.bolum
+-- 
+-- DROP TABLE IF EXISTS public.bolum;
+-- 
+-- CREATE TABLE IF NOT EXISTS public.bolum
+-- (
+--     bolum_id smallint NOT NULL,
+--     bolum_isim character varying(50) COLLATE pg_catalog."default",
+--     CONSTRAINT "BOLUM_pkey" PRIMARY KEY (bolum_id)
+-- )
+-- 
+-- TABLESPACE pg_default;
+-- 
+-- ALTER TABLE IF EXISTS public.bolum
+--     OWNER to postgres;
+-- 
+-- Table: public.cinsiyet
+-- 
+-- DROP TABLE IF EXISTS public.cinsiyet;
+-- 
+-- CREATE TABLE IF NOT EXISTS public.cinsiyet
+-- (
+--     cinsiyet_id smallint NOT NULL,
+--     cinsiyet_ad character varying(5) COLLATE pg_catalog."default",
+--     CONSTRAINT "CINSIYET_pkey" PRIMARY KEY (cinsiyet_id)
+-- )
+-- 
+-- TABLESPACE pg_default;
+-- 
+-- ALTER TABLE IF EXISTS public.cinsiyet
+--     OWNER to postgres;
+-- 
+-- Table: public.fatura
+-- 
+-- DROP TABLE IF EXISTS public.fatura;
+-- 
+-- CREATE TABLE IF NOT EXISTS public.fatura
+-- (
+--     fatura_id smallint NOT NULL,
+--     ogrenci_id smallint NOT NULL,
+--     oda_id smallint,
+--     fatura_tarihi date NOT NULL,
+--     CONSTRAINT fatura_pkey PRIMARY KEY (fatura_id),
+--     CONSTRAINT oda_fatura_fkey FOREIGN KEY (oda_id)
+--         REFERENCES public.oda (oda_id) MATCH FULL
+--         ON UPDATE CASCADE
+--         ON DELETE CASCADE,
+--     CONSTRAINT ogrenci_fatura_fkey FOREIGN KEY (ogrenci_id)
+--         REFERENCES public.ogrenci (kisi_id) MATCH FULL
+--         ON UPDATE CASCADE
+--         ON DELETE CASCADE
+-- )
+-- 
+-- TABLESPACE pg_default;
+-- 
+-- ALTER TABLE IF EXISTS public.fatura
+--     OWNER to postgres;
+-- 
+-- Table: public.il
+-- 
+-- DROP TABLE IF EXISTS public.il;
+-- 
+-- CREATE TABLE IF NOT EXISTS public.il
+-- (
+--     il_id smallint NOT NULL,
+--     il_isim character varying(13) COLLATE pg_catalog."default",
+--     CONSTRAINT "IL_pkey" PRIMARY KEY (il_id)
+-- )
+-- 
+-- TABLESPACE pg_default;
+-- 
+-- ALTER TABLE IF EXISTS public.il
+--     OWNER to postgres;
+-- 
+-- Table: public.iletisim_bilgileri
+-- 
+-- DROP TABLE IF EXISTS public.iletisim_bilgileri;
+-- 
+-- CREATE TABLE IF NOT EXISTS public.iletisim_bilgileri
+-- (
+--     iletisim_id smallint NOT NULL,
+--     telefon_no bigint,
+--     il_no smallint NOT NULL,
+--     kisi_no smallint NOT NULL,
+--     CONSTRAINT iletisim_bilgileri_pkey PRIMARY KEY (iletisim_id),
+--     CONSTRAINT il_iletisim_fkey FOREIGN KEY (il_no)
+--         REFERENCES public.il (il_id) MATCH FULL
+--         ON UPDATE CASCADE
+--         ON DELETE CASCADE,
+--     CONSTRAINT kisi_iletisim_fkey FOREIGN KEY (kisi_no)
+--         REFERENCES public.kisi (kisi_id) MATCH FULL
+--         ON UPDATE CASCADE
+--         ON DELETE CASCADE
+-- )
+-- 
+-- TABLESPACE pg_default;
+-- 
+-- ALTER TABLE IF EXISTS public.iletisim_bilgileri
+--     OWNER to postgres;
+-- 
+-- Table: public.kisi
+-- 
+-- DROP TABLE IF EXISTS public.kisi;
+-- 
+-- CREATE TABLE IF NOT EXISTS public.kisi
+-- (
+--     kisi_id smallint NOT NULL,
+--     kisi_ad character varying(20) COLLATE pg_catalog."default" NOT NULL,
+--     kisi_soyad character varying(20) COLLATE pg_catalog."default" NOT NULL,
+--     kisi_tur character varying(20) COLLATE pg_catalog."default",
+--     kisi_cinsiyet smallint NOT NULL,
+--     CONSTRAINT kisi_pkey PRIMARY KEY (kisi_id),
+--     CONSTRAINT "cinsiyet-kisi" FOREIGN KEY (kisi_cinsiyet)
+--         REFERENCES public.cinsiyet (cinsiyet_id) MATCH FULL
+--         ON UPDATE CASCADE
+--         ON DELETE CASCADE
+-- )
+-- 
+-- TABLESPACE pg_default;
+-- 
+-- ALTER TABLE IF EXISTS public.kisi
+--     OWNER to postgres;
+-- 
+-- Table: public.oda
+-- 
+-- DROP TABLE IF EXISTS public.oda;
+-- 
+-- CREATE TABLE IF NOT EXISTS public.oda
+-- (
+--     oda_id smallint NOT NULL,
+--     yurt_id smallint NOT NULL,
+--     kat_no smallint,
+--     kapasite smallint,
+--     CONSTRAINT oda_pkey PRIMARY KEY (oda_id),
+--     CONSTRAINT yurt_oda_fkey FOREIGN KEY (yurt_id)
+--         REFERENCES public.yurt (yurt_id) MATCH FULL
+--         ON UPDATE CASCADE
+--         ON DELETE CASCADE
+-- )
+-- 
+-- TABLESPACE pg_default;
+-- 
+--     OWNER to postgres;
+-- CREATE TABLE IF NOT EXISTS "kisi"."ogrenci"
+-- (
+--     Inherited from table public.kisi: kisi_id smallint NOT NULL,
+--     Inherited from table public.kisi: kisi_ad character varying(20) COLLATE pg_catalog."default" NOT NULL,
+--     Inherited from table public.kisi: kisi_soyad character varying(20) COLLATE pg_catalog."default" NOT NULL,
+--     Inherited from table public.kisi: kisi_tur character varying(20) COLLATE pg_catalog."default",
+--     Inherited from table public.kisi: kisi_cinsiyet smallint NOT NULL,
+--     bolum_id smallint NOT NULL,
+--     universite_id smallint NOT NULL,
+--     CONSTRAINT ogrenci_pkey PRIMARY KEY (kisi_id),
+--     CONSTRAINT bolum_ogrenci_fkey FOREIGN KEY (bolum_id)
+--         REFERENCES public.bolum (bolum_id) MATCH FULL
+--         ON UPDATE CASCADE
+--         ON DELETE CASCADE,
+--     CONSTRAINT universite_ogrenci_fkey FOREIGN KEY (universite_id)
+--         REFERENCES public.universite (universite_id) MATCH FULL
+--         ON UPDATE CASCADE
+--         ON DELETE CASCADE
+-- )
+-- 
+-- TABLESPACE pg_default;
+-- 
+--     OWNER to postgres;
+-- 
+-- CREATE TABLE IF NOT EXISTS "kisi"."personel"
+-- (
+--     Inherited from table public.kisi: kisi_id smallint NOT NULL,
+--     Inherited from table public.kisi: kisi_ad character varying(20) COLLATE pg_catalog."default" NOT NULL,
+--     Inherited from table public.kisi: kisi_soyad character varying(20) COLLATE pg_catalog."default" NOT NULL,
+--     Inherited from table public.kisi: kisi_tur character varying(20) COLLATE pg_catalog."default",
+--     Inherited from table public.kisi: kisi_cinsiyet smallint NOT NULL,
+--     CONSTRAINT personel_pkey PRIMARY KEY (kisi_id)
+-- )
+--     
+-- 
+-- TABLESPACE pg_default;
+--     OWNER to postgres;
+-- 
+-- Table: public.universite
+-- 
+-- DROP TABLE IF EXISTS public.universite;
+-- 
+-- CREATE TABLE IF NOT EXISTS public.universite
+-- (
+--     universite_id smallint NOT NULL,
+--     universite_ad character varying COLLATE pg_catalog."default",
+--     CONSTRAINT universite_pkey PRIMARY KEY (universite_id)
+-- )
+-- 
+-- TABLESPACE pg_default;
+-- 
+-- ALTER TABLE IF EXISTS public.universite
+--     OWNER to postgres;
+-- 
+-- Table: public.veli
+-- 
+-- DROP TABLE IF EXISTS public.veli;
+-- 
+-- CREATE TABLE IF NOT EXISTS public.veli
+-- (
+--     Inherited from table public.kisi: kisi_id smallint NOT NULL,
+--     Inherited from table public.kisi: kisi_ad character varying(20) COLLATE pg_catalog."default" NOT NULL,
+--     Inherited from table public.kisi: kisi_soyad character varying(20) COLLATE pg_catalog."default" NOT NULL,
+--     Inherited from table public.kisi: kisi_tur character varying(20) COLLATE pg_catalog."default",
+--     Inherited from table public.kisi: kisi_cinsiyet smallint NOT NULL,
+--     CONSTRAINT veli_pkey PRIMARY KEY (kisi_id)
+-- )
+--     INHERITS (public.kisi)
+-- 
+-- TABLESPACE pg_default;
+-- 
+-- ALTER TABLE IF EXISTS public.veli
+--     OWNER to postgres;
+-- 
+-- Table: public.yatak
+-- 
+-- DROP TABLE IF EXISTS public.yatak;
+-- 
+-- CREATE TABLE IF NOT EXISTS public.yatak
+-- (
+--     yatak_id smallint NOT NULL,
+--     oda_id smallint NOT NULL,
+--     yatak_durumu smallint NOT NULL,
+--     CONSTRAINT yatak_pkey PRIMARY KEY (yatak_id),
+--     CONSTRAINT oda_yatak_fkey FOREIGN KEY (oda_id)
+--         REFERENCES public.oda (oda_id) MATCH FULL
+--         ON UPDATE CASCADE
+--         ON DELETE CASCADE,
+--     CONSTRAINT "yatakDurumu_yatak_fkey" FOREIGN KEY (yatak_durumu)
+--         REFERENCES public.yatak_durumu (durum_id) MATCH FULL
+--         ON UPDATE CASCADE
+--         ON DELETE CASCADE
+-- )
+-- 
+-- TABLESPACE pg_default;
+-- 
+-- ALTER TABLE IF EXISTS public.yatak
+--     OWNER to postgres;
+-- 
+-- Table: public.yatak_durumu
+-- 
+-- DROP TABLE IF EXISTS public.yatak_durumu;
+-- 
+-- CREATE TABLE IF NOT EXISTS public.yatak_durumu
+-- (
+--     durum_id smallint NOT NULL,
+--     durum_ad character varying(5) COLLATE pg_catalog."default",
+--     CONSTRAINT yatak_durumu_pkey PRIMARY KEY (durum_id)
+-- )
+-- 
+-- TABLESPACE pg_default;
+-- 
+-- ALTER TABLE IF EXISTS public.yatak_durumu
+--     OWNER to postgres;
+-- 
+-- Table: public.yurt
+-- 
+-- DROP TABLE IF EXISTS public.yurt;
+-- 
+-- CREATE TABLE IF NOT EXISTS public.yurt
+-- (
+--     yurt_id smallint NOT NULL,
+--     yurt_iletisim smallint NOT NULL,
+--     yurt_kapasite smallint,
+--     CONSTRAINT yurt_pkey PRIMARY KEY (yurt_id),
+--     CONSTRAINT iletisim_yurt_fkey FOREIGN KEY (yurt_iletisim)
+--         REFERENCES public.iletisim_bilgileri (iletisim_id) MATCH FULL
+--         ON UPDATE CASCADE
+--         ON DELETE CASCADE
+-- )
+-- 
+-- TABLESPACE pg_default;
+-- 
+-- ALTER TABLE IF EXISTS public.yurt
+--     OWNER to postgres;
+-- 
+-- Table: public.yurt_kayit
+-- DROP TABLE IF EXISTS public.yurt_kayit;
+-- 
+-- CREATE TABLE IF NOT EXISTS public.yurt_kayit
+-- (
+--     kayit_id smallint NOT NULL,
+--     yurt_id smallint,
+--     ogrenci_id smallint NOT NULL,
+--     "kayıt_tarih" smallint,
+--     oda_no smallint NOT NULL,
+--     CONSTRAINT yurt_kayit_pkey PRIMARY KEY (kayit_id),
+--     CONSTRAINT "oda_yurtKayit_fkey" FOREIGN KEY (oda_no)
+--         REFERENCES public.oda (oda_id) MATCH FULL
+--         ON UPDATE CASCADE
+--         ON DELETE CASCADE,
+--     CONSTRAINT "ogrenci_yurtKayit_fkey" FOREIGN KEY (ogrenci_id)
+--         REFERENCES public.ogrenci (kisi_id) MATCH FULL
+--         ON UPDATE CASCADE
+--         ON DELETE CASCADE,
+--     CONSTRAINT "yurt_yurtKayit_fkey" FOREIGN KEY (yurt_id)
+--         REFERENCES public.yurt (yurt_id) MATCH FULL
+--         ON UPDATE CASCADE
+--         ON DELETE CASCADE
+-- )
+-- 
+-- TABLESPACE pg_default;
+-- 
+-- ALTER TABLE IF EXISTS public.yurt_kayit
+--     OWNER to postgres;
+-- 
+-- insert into il (il_isim) VALUES('Adana')
+-- insert into il (il_isim) VALUES('Adıyaman')
+-- insert into il (il_isim) VALUES('Afyon')
+-- insert into il (il_isim) VALUES('Ağrı')
+-- insert into il (il_isim) VALUES('Amasya')
+-- insert into il (il_isim) VALUES('Ankara')
+-- insert into il (il_isim) VALUES('Antalya')
+-- insert into il (il_isim) VALUES('Artvin')
+-- insert into il (il_isim) VALUES('Aydın')
+-- insert into il (il_isim) VALUES('Balıkesir')
+-- insert into il (il_isim) VALUES('Bilecik')
+-- insert into il (il_isim) VALUES('Bingöl')
+-- insert into il (il_isim) VALUES('Bitlis')
+-- insert into il (il_isim) VALUES('Bolu')
+-- insert into il (il_isim) VALUES('Burdur')
+-- insert into il (il_isim) VALUES('Bursa')
+-- insert into il (il_isim) VALUES('Çanakkale')
+-- insert into il (il_isim) VALUES('Çankırı')
+-- insert into il (il_isim) VALUES('Çorum')
+-- insert into il (il_isim) VALUES('Denizli')
+-- insert into il (il_isim) VALUES('Diyarbakır')
+-- insert into il (il_isim) VALUES('Edirne')
+-- insert into il (il_isim) VALUES('Elazığ')
+-- insert into il (il_isim) VALUES('Erzincan')
+-- insert into il (il_isim) VALUES('Erzurum')
+-- insert into il (il_isim) VALUES('Eskişehir')
+-- insert into il (il_isim) VALUES('Gaziantep')
+-- insert into il (il_isim) VALUES('Giresun')
+-- insert into il (il_isim) VALUES('Gümüşhane')
+-- insert into il (il_isim) VALUES('Hakkari')
+-- insert into il (il_isim) VALUES('Hatay')
+-- insert into il (il_isim) VALUES('Isparta')
+-- insert into il (il_isim) VALUES('Mersin')
+-- insert into il (il_isim) VALUES('İstanbul')
+-- insert into il (il_isim) VALUES('İzmir')
+-- insert into il (il_isim) VALUES('Kars')
+-- insert into il (il_isim) VALUES('Kastamonu')
+-- insert into il (il_isim) VALUES('Kayseri')
+-- insert into il (il_isim) VALUES('Kırklareli')
+-- insert into il (il_isim) VALUES('Kırşehir')
+-- insert into il (il_isim) VALUES('Kocaeli')
+-- insert into il (il_isim) VALUES('Konya')
+-- insert into il (il_isim) VALUES('Kütahya')
+-- insert into il (il_isim) VALUES('Malatya')
+-- insert into il (il_isim) VALUES('Manisa')
+-- insert into il (il_isim) VALUES('Kahramanmaraş')
+-- insert into il (il_isim) VALUES('Mardin')
+-- insert into il (il_isim) VALUES('Muğla')
+-- insert into il (il_isim) VALUES('Muş')
+-- insert into il (il_isim) VALUES('Nevşehir')
+-- insert into il (il_isim) VALUES('Niğde')
+-- insert into il (il_isim) VALUES('Ordu')
+-- insert into il (il_isim) VALUES('Rize')
+-- insert into il (il_isim) VALUES('Sakarya')
+-- insert into il (il_isim) VALUES('Samsun')
+-- insert into il (il_isim)VALUES('Siirt')
+-- insert into il (il_isim) VALUES('Sinop')
+-- insert into il (il_isim) VALUES('Sivas')
+-- insert into il (il_isim)VALUES('Tekirdağ')
+-- insert into il (il_isim) VALUES('Tokat')
+-- insert into il (il_isim) VALUES('Trabzon')
+-- insert into il (il_isim) VALUES('Tunceli')
+-- insert into il (il_isim) VALUES('Şanlıurfa')
+-- insert into il (il_isim) VALUES('Uşak')
+-- insert into il (il_isim) VALUES('Van')
+-- insert into il (il_isim) VALUES('Yozgat')
+-- insert into il (il_isim) VALUES('Zonguldak')
+-- insert into il (il_isim) VALUES('Aksaray')
+-- insert into il (il_isim) VALUES('Bayburt')
+-- insert into il (il_isim) VALUES('Karaman')
+-- insert into il (il_isim) VALUES('Kırıkkale')
+-- insert into il (il_isim) VALUES('Batman')
+-- insert into il (il_isim) VALUES('Şırnak')
+-- insert into il (il_isim) VALUES('Bartın')
+-- insert into il (il_isim) VALUES('Ardahan')
+-- insert into il (il_isim) VALUES('Iğdır')
+-- insert into il (il_isim) VALUES('Yalova')
+-- insert into il (il_isim) VALUES('Karabük')
+-- insert into il (il_isim) VALUES('Kilis')
+-- insert into il (il_isim) VALUES('Osmaniye')
+-- insert into il (il_isim) VALUES('Düzce')
+-- 
+-- insert into bolum (bolum_id,bolum_isim) VALUES(1,'Bilgisayar Mühendisliği')
+-- insert into bolum (bolum_id,bolum_isim) VALUES(2,'Endüstri Mühendisliği')
+-- insert into bolum (bolum_id,bolum_isim) VALUES(3,'Elektrik Elektronik Mühendisliği')
+-- insert into bolum (bolum_id,bolum_isim) VALUES(4,'Inşaat Mühendisliği')
+-- insert into bolum (bolum_id,bolum_isim) VALUES(5,'Gıda Mühendisliği')
+-- insert into bolum (bolum_id,bolum_isim) VALUES(6,'Makine Mühendisliği')
+-- insert into bolum (bolum_id,bolum_isim) VALUES(7,'Metalurji Mühendisliği')
+-- insert into bolum (bolum_id,bolum_isim) VALUES(8,'Kimya Mühendisliği')
+-- insert into bolum (bolum_id,bolum_isim) VALUES(9,'Hukuk')
+-- insert into bolum (bolum_id,bolum_isim) VALUES(10,'Psikoloji')
+-- insert into bolum (bolum_id,bolum_isim) VALUES(11,'Işletme')
+-- insert into bolum (bolum_id,bolum_isim) VALUES(12,'Sosyoloji')
+-- insert into bolum (bolum_id,bolum_isim) VALUES(13,'Ekonomi')
+-- insert into bolum (bolum_id,bolum_isim) VALUES(14,'Tarih')
+-- insert into bolum (bolum_id,bolum_isim) VALUES(15,'Türk Dili ve Edebiyatı')
+-- insert into bolum (bolum_id,bolum_isim) VALUES(16,'Ingiliz Dili ve Edebiyatı')
+-- insert into bolum (bolum_id,bolum_isim) VALUES(17,'Uluslararası Ilişkiler')
+-- insert into bolum (bolum_id,bolum_isim) VALUES(18,'Tıp')
+-- insert into bolum (bolum_id,bolum_isim) VALUES(19,'Diş Hekimliği')
+-- insert into bolum (bolum_id,bolum_isim) VALUES(20,'Hemşirelik')
+-- insert into bolum (bolum_id,bolum_isim) VALUES(21,'Fizyoterapi ve Rehabilitasyon')
+-- insert into bolum (bolum_id,bolum_isim) VALUES(22,'Fizik')
+-- insert into bolum (bolum_id,bolum_isim) VALUES(23,'Kimya')
+-- insert into bolum (bolum_id,bolum_isim) VALUES(24,'Biyoloji')
+-- insert into bolum (bolum_id,bolum_isim) VALUES(25,'Matematik')
+-- insert into bolum (bolum_id,bolum_isim) VALUES(26,'Gazetecilik')
+-- insert into bolum (bolum_id,bolum_isim) VALUES(27,'Radyo-Televizyon')
+-- insert into bolum (bolum_id,bolum_isim) VALUES(28,'Medya ve Iletişim')
+-- 
+-- insert into cinsiyet (cinsiyet_id,cinsiyet_ad) values (1,'Erkek')
+-- insert into cinsiyet (cinsiyet_id,cinsiyet_ad) values (2,'Kadın')
+-- 
+-- insert into universite (universite_id,universite_ad) values (1,'Sakarya Üniversitesi')
+-- insert into universite (universite_id,universite_ad) values (2,'Sakarya Uygulamalı Bilimler Üniversitesi')
+-- 
+-- insert into yatak_durumu (durum_id,durum_ad) values (1,'Boş')
+-- insert into yatak_durumu (durum_id,durum_ad) values (2,'Dolu')
+-- 
+-- insert into il (il_isim) values ('Adana')
+-- 
+-- 
+-- Create or replace function ogrenciArti()
+--     returns TRIGGER
+--     AS
+--     $$
+--  begin
+--  update yurt set mevcut_ogrenci = mevcut_ogrenci+1;
+--  return new;
+--  end;
+--  $$
+--  LANGUAGE plpgsql;
+-- 
+-- create trigger artiOgrenci
+-- after INSERT
+-- on ogrenci
+-- for EACH ROW
+-- execute PROCEDURE ogrenciArti();
+-- 
+-- 
+-- Create or replace function ogrenciCikti()
+--     returns TRIGGER
+--     AS
+--     $$
+--  begin
+--  update yurt set mevcut_ogrenci = mevcut_ogrenci-1;
+--  return new;
+--  end;
+--  $$
+--  LANGUAGE plpgsql;
+-- 
+-- create trigger ciktiOgrenci
+-- after DELETE
+-- on ogrenci
+-- for EACH ROW
+-- execute PROCEDURE ogrenciCikti();
+-- 
+-- 
+-- 
+-- Create VIEW ogrenciListe
+-- AS
+-- Select ogrenci.kisi_id AS "TC",ogrenci.kisi_ad AS "AD",ogrenci.kisi_soyad AS "SOYAD",cinsiyet.cinsiyet_ad AS "CINSIYET",universite.universite_ad AS "UNIVERSITE",bolum.bolum_isim AS "BOLUM",oda.oda_id as "ODA",il.il_isim AS "MEMLEKET" 
+-- from ogrenci
+-- inner JOIN cinsiyet
+-- on
+-- ogrenci.kisi_cinsiyet = cinsiyet.cinsiyet_id
+-- inner JOIN universite
+-- ON
+-- ogrenci.universite_id = universite.universite_id
+-- inner JOIN bolum
+-- on
+-- ogrenci.bolum_id = bolum.bolum_id
+-- inner join oda
+-- on
+-- ogrenci.oda_id = oda.oda_id
+-- inner join il
+-- on
+-- ogrenci.il_id = il.il_id
+
+
+-- Create procedure ogrenci_guncelle (p1 text,p2 text,p3 BIGINT,p4 INT,p5 INT,p6 smallint,p7 smallint,p8 smallint)
+-- language SQL
+-- as 
+-- $$
+-- update ogrenci set kisi_ad = p1 , kisi_soyad = p2 , bolum_id = p5 , universite_id = p4,il_id = p6 ,oda_id = p7 where kisi_id = p3;
+-- call oda_guncelle(p7,p8);
+-- $$
+-- 
+-- Create procedure ogrencii_sil (p1 BIGINT,p2 smallint)
+-- language SQL
+-- as 
+-- $$
+-- delete from ogrenci where kisi_id=p1;
+-- call oda_kayitsil(p2)
+-- $$
+-- 
+-- CREATE  VIEW personelListe
+-- AS
+-- Select personel.kisi_id AS "TC",personel.kisi_ad AS "AD",personel.kisi_soyad AS "SOYAD",cinsiyet.cinsiyet_ad AS "CINSIYET",personel_tur.tur_ad AS "MESLEK",il.il_isim AS "MEMLEKET" 
+-- from personel 
+-- inner join cinsiyet
+-- on
+-- personel.kisi_cinsiyet = cinsiyet.cinsiyet_id
+-- inner join personel_tur
+-- ON
+-- personel.personel_tur = personel_tur.tur_id
+-- inner JOIN il
+-- ON
+-- personel.il_id = il.il_id
+-- 
+-- 
+-- Create procedure personel_ekle (p1 BIGINT,p2 text,p3 text,p4 int,p5 int,p6 INT)
+-- language SQL
+-- as 
+-- $$
+-- insert into personel (kisi_id,kisi_ad,kisi_soyad,kisi_cinsiyet,personel_tur,il_id) values(p1,p2,p3,p4,p5,p6);
+-- $$
+-- 
+-- 
+-- Create procedure personel_sil (p1 BIGINT)
+-- language SQL
+-- as 
+-- $$
+-- delete from personel where kisi_id=p1;
+-- $$
+-- 
+-- 
+-- Create procedure personel_guncelle (p1 BIGINT,p2 text,p3 text,p4 INT,p5 INT)
+-- language SQL
+-- as 
+-- $$
+-- update personel set kisi_ad = p2 , kisi_soyad = p3 , personel_tur = p4 , il_id = p5 where kisi_id = p1;
+-- $$
+-- 
+-- 
+-- Create or replace function personell_cikar()
+--     returns TRIGGER
+--     AS
+--     $$
+--  begin
+--  update yurt set mevcut_personel = mevcut_personel-1;
+--  return new;
+--  end;
+--  $$
+--  LANGUAGE plpgsql;
+-- 
+-- create trigger personellcikart
+-- after DELETE
+-- on personel
+-- for EACH ROW
+-- execute PROCEDURE personell_cikar();
+-- 
+-- 
+-- Create or replace function personell_arttir()
+--     returns TRIGGER
+--     AS
+--     $$
+--  begin
+--  update yurt set mevcut_personel = mevcut_personel+1;
+--  return new;
+--  end;
+--  $$
+--  LANGUAGE plpgsql;
+-- 
+-- 
+-- create trigger personellarttir
+-- after INSERT
+-- on personel
+-- for EACH ROW
+-- execute PROCEDURE personell_arttir();
+-- 
+-- 
+-- CREATE  VIEW yurtListe
+-- AS
+-- Select yurt.mevcut_ogrenci AS "MEVCUT OGRENCI",yurt.mevcut_personel AS "MEVCUT PERSONEL"
+-- from yurt 
+-- 
+-- Create VIEW faturaListe
+-- AS
+-- select ogrenci.kisi_ad as "AD" , ogrenci.kisi_soyad AS "SOYAD",yatak.yatak_fiyat AS "UCRET" 
+-- from fatura
+-- inner join ogrenci
+-- on
+-- fatura.ogrenci_id = ogrenci.kisi_id
+-- inner join yatak
+-- on
+-- fatura.oda_id = yatak.yatak_id
+-- 
+-- Create procedure fatura_ekle (p1 BIGINT,p2 SMALLINT)
+-- language SQL
+-- as 
+-- $$
+-- insert into fatura (ogrenci_id,oda_id) values(p1,p2);
+-- $$
+-- 
+
+ 
+-- Create procedure ogrenci_ekle (p1 text,p2 text,p3 bigINT,p4 int,p5 int,p6 INT,p7 SMALLINT,p8 SMALLINT,p9 SMALLINT)
+-- language SQL
+-- as 
+-- $$
+-- insert into ogrenci (kisi_ad,kisi_soyad,kisi_id,kisi_cinsiyet,universite_id,bolum_id,il_id,oda_id) values(p1,p2,p3,p4,p5,p6,p7,p8);
+-- call fatura_ekle(p3,p9);
+-- call oda_guncelle(p8,p9)
+-- $$
+-- 
+-- Create procedure oda_guncelle (p1 smallint,p2 smallint)
+-- language SQL
+-- as 
+-- $$
+-- update oda set yurt_id = 1 , yatak_id = p2 , kapasite = kapasite +1  where oda_id = p1;
+-- $$
+-- 
+-- Create procedure oda_kayitsil (p1 smallint)
+-- language SQL
+-- as 
+-- $$
+-- update oda set yurt_id = 1 , kapasite = kapasite - 1  where oda_id = p1;
+-- $$
+-- 
+-- CREATE  view odaListe
+-- AS
+-- SELECT oda.oda_id AS "ODA NUMARASI",oda.yatak_id AS "ODA KAPASITESI",oda.kapasite AS "ODA MEVCUDU"
+-- from oda
